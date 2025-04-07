@@ -5,19 +5,26 @@
 /**
  * @var \Magento\Sales\Block\Adminhtml\Order\Create\Billing\Address|\Magento\Sales\Block\Adminhtml\Order\Create\Shipping\Address $block
  */
+$viewModel = $block->getViewModel();
+if($viewModel) {
+    $directoryDataJson = $viewModel->getRegionsJson();
+} else {
+    $directoryDataJson = '{}';
+}
+
 if ($block->getIsShipping()):
     $_fieldsContainerId = 'order-shipping_address_fields';
     $_addressChoiceContainerId = 'order-shipping_address_choice';
     ?>
     <script>
-    require(["Magento_Sales/order/create/form"], function(){
+        require(["Magento_Sales/order/create/form"], function(){
 
-        order.shippingAddressContainer = '<?= /* @escapeNotVerified */ $_fieldsContainerId ?>';
-        order.setAddresses(<?= /* @escapeNotVerified */ $block->getAddressCollectionJson() ?>);
+            order.shippingAddressContainer = '<?= /* @escapeNotVerified */ $_fieldsContainerId ?>';
+            order.setAddresses(<?= /* @escapeNotVerified */ $block->getAddressCollectionJson() ?>);
 
-    });
+        });
     </script>
-    <?php
+<?php
 else:
     $_fieldsContainerId = 'order-billing_address_fields';
     $_addressChoiceContainerId = 'order-billing_address_choice';
@@ -27,15 +34,21 @@ else:
             order.billingAddressContainer = '<?= /* @escapeNotVerified */ $_fieldsContainerId ?>';
         });
     </script>
-    <?php
+<?php
 endif; ?>
 
+<?php
+$url = $this->getUrl('extendedromcity/cities/getcities');
+?>
 <script type="text/x-magento-init">
     {
         "*": {
-            "Eadesigndev_RomCity/js/city-admin": {}
-        }
+            "XtremeVision_ExtendedRomCity/js/city-admin-order": {
+                "ajaxUrl": "<?= $url ?>",
+                "directoryData": <?= /* @noEscape */ $directoryDataJson ?>
     }
+}
+}
 </script>
 <fieldset class="admin__fieldset">
     <legend class="admin__legend <?= /* @escapeNotVerified */ $block->getHeaderCssClass() ?>">

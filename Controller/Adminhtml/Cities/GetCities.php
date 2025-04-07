@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace XtremeVision\ExtendedRomCity\Controller\Adminhtml\Cities;
+namespace Eadesigndev\RomCity\Controller\Adminhtml\Cities;
 
 use Eadesigndev\RomCity\Api\RomCityRepositoryInterface;
 use Magento\Backend\App\AbstractAction;

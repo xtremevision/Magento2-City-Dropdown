@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace XtremeVision\ExtendedRomCity\ViewModel\Adminhtml\Order\Create;
+namespace Eadesigndev\RomCity\ViewModel\Adminhtml\Order\Create;
 
 use Magento\Directory\Model\RegionProvider;
 use Magento\Framework\View\Element\Block\ArgumentInterface;

@@ -4,22 +4,22 @@ declare(strict_types=1);
 
 namespace Eadesigndev\RomCity\ViewModel\Adminhtml\Order\Create;
 
-use Magento\Directory\Model\RegionProvider;
+use Magento\Directory\Helper\Data as DirectoryHelper;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 
 class DirectoryData implements ArgumentInterface
 {
-    private RegionProvider $regionProvider;
+    private $directoryHelper;
 
     public function __construct(
-        RegionProvider $regionProvider
+        DirectoryHelper $directoryHelper
     )
     {
-        $this->regionProvider = $regionProvider;
+        $this->directoryHelper = $directoryHelper;
     }
 
     public function getRegionsJson()
     {
-        return $this->regionProvider->getRegionJson();
+        return $this->directoryHelper->getRegionJson();
     }
 }

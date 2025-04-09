@@ -22,7 +22,7 @@
                     Eadesigndev\RomCity\Model\ResourceModel\Collection\City\Grid\Collection
                 </item>
                 <item name="xtea_region_listing_data_source" xsi:type="string">
-                    Eadesigndev\RomCity\Model\ResourceModel\Collection\Grid\Collection
+                    Eadesigndev\RomCity\Model\ResourceModel\Collection\Grid\RegionCollection
                 </item>
             </argument>
         </arguments>
@@ -37,7 +37,7 @@
         </arguments>
     </type>
 
-    <virtualType name="Eadesigndev\RomCity\Model\ResourceModel\Collection\Grid\Collection"
+    <virtualType name="Eadesigndev\RomCity\Model\ResourceModel\Collection\Grid\RegionCollection"
                  type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
         <arguments>
             <argument name="mainTable" xsi:type="string">directory_country_region</argument>

@@ -77,6 +77,21 @@ class Collection extends RomCityCollection implements SearchResultInterface
         $this->setMainTable($mainTable);
     }
 
+    protected function _initSelect()
+    {
+        $this->addFilterToMap('region_name', 'directory_country_region_name.name');
+
+        $mainTable = $this->getMainTable();
+        $this->getSelect()
+            ->from(['main_table' => $mainTable])
+            ->join('directory_country_region_name',
+                'main_table.region_id = directory_country_region_name.region_id',
+                [
+                    'name as region_name',
+                ]);
+        return $this;
+    }
+
     /**
      * @return AggregationInterface
      */

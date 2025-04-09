@@ -167,6 +167,15 @@
             </argument>
         </column>
 
+        <column name="region_name">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="label" xsi:type="string" translate="true">Region Name</item>
+                </item>
+            </argument>
+        </column>
+
         <column name="city">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">

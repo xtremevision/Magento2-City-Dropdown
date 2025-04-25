@@ -89,7 +89,7 @@ define([
                 }
 
                 var selectCity = $("<select class='required-entry select admin__control-select' name='" + cityInputName + "' id='" + cityInputId + "'></select>");
-                var htmlSelect = '<option value="">Selectati localitatea</option>';
+                var htmlSelect = '<option value="">Please select city</option>';
                 var options;
 
                 $.each(region, function (index, value) {
@@ -145,7 +145,7 @@ define([
                 $(shippingRegionIdSelector).show();
                 $(shippingRegionSelector).hide();
             }
-            if($(billingRegionIdSelector).prop('tagName') === 'SELECT' && shippingAsBilling) {
+            if($(billingRegionIdSelector).prop('tagName') === 'SELECT' && shippingAsBilling === true) {
                 var shippingRegionId = $(shippingRegionIdSelector);
                 var billingRegionOptions = $(billingRegionIdSelector + ' > option').clone();
                 shippingRegionId.empty().append(billingRegionOptions);
@@ -153,7 +153,7 @@ define([
         });
 
         $(document).on('change', "[name='order[billing_address][city]']", function () {
-            if(this.tagName === 'SELECT' && shippingAsBilling) {
+            if(this.tagName === 'SELECT' && shippingAsBilling === true) {
                 var shippingCity = $(shippingCitySelectSelector);
                 var billingCityOptions = $(billingCitySelectSelector + ' > option').clone(true);
                 shippingCity.empty().append(billingCityOptions);

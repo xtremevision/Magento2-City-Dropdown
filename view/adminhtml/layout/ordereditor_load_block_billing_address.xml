@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © MageWorx. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+ -->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="mageworx_ordereditor_address_form_container" template="Eadesigndev_RomCity::ordereditor/edit/form/address.phtml">
+            <action method="setTemplate">
+                <argument name="template" xsi:type="string">Eadesigndev_RomCity::ordereditor/edit/form/address.phtml</argument>
+            </action>
+            <arguments>
+                <argument name="view_model" xsi:type="object">Eadesigndev\RomCity\ViewModel\Adminhtml\Order\Create\DirectoryData</argument>
+            </arguments>
+        </referenceBlock>
+    </body>
+</page>

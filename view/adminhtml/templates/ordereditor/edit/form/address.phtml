@@ -1,0 +1,41 @@
+<?php
+/**
+ * Copyright © MageWorx. All rights reserved.
+ * See LICENSE.txt for license details.
+ */
+?>
+<?php
+/**
+ * @var \MageWorx\OrderEditor\Block\Adminhtml\Sales\Order\Edit\Form\Address $block
+ */
+
+$viewModel = $block->getViewModel();
+if($viewModel) {
+    $directoryDataJson = $viewModel->getRegionsJson();
+} else {
+    $directoryDataJson = '{}';
+}
+$url = $this->getUrl('extendedromcity/cities/getcities');
+?>
+<div class="message message-notice">
+    <div class="message-inner">
+        <div class="message-content">
+            <?= $block->escapeHtml(__('Changing address information will not recalculate tax.')); ?>
+        </div>
+    </div>
+</div>
+
+<?= /* @noEscape */ $block->getAddressForm(); ?>
+<?= /* @noEscape */ $block->getSubmitButtonHtml() ?>
+<?= /* @noEscape */ $block->getCancelButtonHtml() ?>
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "Eadesigndev_RomCity/js/city-admin-order": {
+                "ajaxUrl": "<?= $url ?>",
+                "directoryData": <?= /* @noEscape */ $directoryDataJson ?>,
+                "nameSelectorContainsOrder": false
+            }
+        }
+}
+</script>

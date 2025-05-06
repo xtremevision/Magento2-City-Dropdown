@@ -18,6 +18,18 @@ define([
             billingCitySelectSelector = "select[name*='order[billing_address][city]']",
             shippingCitySelectSelector = "select[name*='order[shipping_address][city]']";
 
+        
+        if (!config.nameSelectorContainsOrder) {
+            billingCountryIdSelector = "[name*='billing_address[country_id]']";
+            shippingCountryIdSelector = "[name*='shipping_address[country_id]']";   
+            billingRegionIdSelector = "[name*='billing_address[region_id]']";
+            shippingRegionIdSelector = "[name*='shipping_address[region_id]']";
+            billingCitySelectSelector = "select[name*='billing_address[city]']";
+            shippingCitySelectSelector = "select[name*='shipping_address[city]']";
+            billingCityTextInputElement = $("[name='billing_address[city]']");
+            shippingCityTextInputElement = $("[name='shipping_address[city]']");
+
+        }
         let regionId = $(regionIdSelector).val();
         let shippingAsBilling = $(shippingAsBillingSelector).is(':checked');
         if (regionId) {
@@ -119,7 +131,7 @@ define([
                 fetchCities(regionId).then(cities => {
                     eaCitiesJson[regionId] = cities;
 
-                    if ($(this).attr('name') === 'order[billing_address][region_id]') {
+                    if ($(this).attr('name') === 'order[billing_address][region_id]' || $(this).attr('name') === 'billing_address[region_id]') {
                         if (shippingAsBilling === true) {
                             populateCityDropdown(regionId);
                         } else {
@@ -134,7 +146,7 @@ define([
             }
         });
 
-        $(document).on('change', "[name='order[billing_address][country_id]']", function () {
+        $(document).on('change', billingCountryIdSelector, function () {
             var selectedCountry = $(billingCountryIdSelector).val();
             if (config.directoryData[selectedCountry] === undefined) {
                 $(shippingRegionIdSelector).hide();
@@ -152,7 +164,18 @@ define([
             }
         });
 
-        $(document).on('change', "[name='order[billing_address][city]']", function () {
+        $(document).on('change', shippingCountryIdSelector, function () {
+            var selectedCountry = $(shippingCountryIdSelector).val();
+            if (config.directoryData[selectedCountry] === undefined) {
+                $(shippingRegionIdSelector).hide();
+                $(shippingCitySelectSelector).replaceWith($(shippingCityTextInputElement));
+            } else {
+                $(shippingRegionIdSelector).show();
+                $(shippingRegionSelector).hide();
+            }
+        });
+
+        $(document).on('change', billingCityTextInputElement, function () {
             if(this.tagName === 'SELECT' && shippingAsBilling === true) {
                 var shippingCity = $(shippingCitySelectSelector);
                 var billingCityOptions = $(billingCitySelectSelector + ' > option').clone(true);

@@ -4,6 +4,7 @@
     <module name="Eadesigndev_RomCity">
         <sequence>
             <module name="Magento_Checkout"/>
+            <module name="MageWorx_OrderEditor"/>
         </sequence>
     </module>
 </config>

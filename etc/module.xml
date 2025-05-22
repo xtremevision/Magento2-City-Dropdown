@@ -5,6 +5,7 @@
         <sequence>
             <module name="Magento_Checkout"/>
             <module name="MageWorx_OrderEditor"/>
+            <module name="Codazon_SalesPro"/>
         </sequence>
     </module>
 </config>

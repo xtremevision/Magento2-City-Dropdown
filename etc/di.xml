@@ -54,4 +54,10 @@
             <argument name="filterPool" xsi:type="object" shared="false">TemplatesGirdFilterPool</argument>
         </arguments>
     </virtualType>
+
+    <type name="Magento\Checkout\Model\ShippingInformationManagement">
+        <plugin name="validate-shipping-information"
+                type="Eadesigndev\RomCity\Plugin\ShippingInformation"
+        />
+    </type>
 </config>

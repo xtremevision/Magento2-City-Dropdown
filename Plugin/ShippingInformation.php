@@ -15,7 +15,7 @@ class ShippingInformation
 
     public function __construct(
         RomCityRepositoryInterface $cityRepository,
-        SearchCriteriaBuilder $searchCriteriaBuilder,
+        SearchCriteriaBuilder $searchCriteriaBuilder
     )
     {
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;

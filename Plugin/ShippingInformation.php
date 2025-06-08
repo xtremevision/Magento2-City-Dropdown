@@ -6,7 +6,7 @@ use Eadesigndev\RomCity\Api\RomCityRepositoryInterface;
 use Magento\Checkout\Api\Data\ShippingInformationInterface;
 use Magento\Checkout\Model\ShippingInformationManagement;
 use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Exception\StateException;
+
 
 class ShippingInformation
 {
@@ -15,7 +15,7 @@ class ShippingInformation
 
     public function __construct(
         RomCityRepositoryInterface $cityRepository,
-        SearchCriteriaBuilder      $searchCriteriaBuilder
+        SearchCriteriaBuilder $searchCriteriaBuilder,
     )
     {
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
@@ -30,34 +30,51 @@ class ShippingInformation
      */
     public function beforeSaveAddressInformation(ShippingInformationManagement $subject, $cartId, ShippingInformationInterface $addressInformation): array
     {
-        $shippingCity = $addressInformation->getShippingAddress()->getCity();
-        $billingCity = $addressInformation->getBillingAddress()->getCity();
-        $shippingRegionId = $addressInformation->getShippingAddress()->getRegionId();
-        $billingRegionId = $addressInformation->getBillingAddress()->getRegionId();
-        $searchCriteria = $this->searchCriteriaBuilder
-            ->addFilter('region_id', $shippingRegionId)
-            ->addFilter('city', $shippingCity)
-            ->create();
-        $shippingAllowedCities = $this->cityRepository->getList($searchCriteria)->getItems();
-        $searchCriteria = $this->searchCriteriaBuilder
-            ->addFilter('region_id', $billingRegionId)
-            ->addFilter('city', $billingCity)
-            ->create();
-        $billingAllowedCities = $this->cityRepository->getList($searchCriteria)->getItems();
+        $shippingAddress = $addressInformation->getShippingAddress();
+        $billingAddress = $addressInformation->getBillingAddress();
+        $customValidationFailed = false;
 
-        $error = [];
-        if (count($shippingAllowedCities) < 1) {
-            $error[] = __('The city "%1" in your current shipping address is not valid. Please update your address before placing the order.', $shippingCity);
+
+        if ($shippingAddress) {
+            $shippingCity = $shippingAddress->getCity();
+            $shippingRegionId = $shippingAddress->getRegionId();
+            if ($shippingCity && $shippingRegionId && !$this->isCityValid($shippingCity, $shippingRegionId)) {
+                $shippingAddress->setCountryId(null);
+                $customValidationFailed = true;
+            }
         }
 
-        if (count($billingAllowedCities) < 1) {
-            $error[] = __('The city "%1" in your current billing address is not valid. Please update your address before placing the order.', $billingCity);
-        }
+        if ($billingAddress) {
+            $billingCity = $billingAddress->getCity();
+            $billingRegionId = $billingAddress->getRegionId();
 
-        if ($error) {
-            throw new StateException(__(implode("\n", $error)));
+            $isBillingSameAsShipping = $shippingAddress &&
+                $shippingAddress->getCity() === $billingCity &&
+                $shippingAddress->getRegionId() === $billingRegionId;
+
+            if ($billingCity && $billingRegionId &&
+                (!$isBillingSameAsShipping || $customValidationFailed) &&
+                !$this->isCityValid($billingCity, $billingRegionId)
+            ) {
+                $billingAddress->setCountryId(null);
+            }
         }
 
         return [$cartId, $addressInformation];
+    }
+
+    private function isCityValid(string $city, $regionId): bool
+    {
+        if (empty($city) || empty($regionId)) {
+            return false;
+        }
+
+        $searchCriteria = $this->searchCriteriaBuilder
+            ->addFilter('region_id', $regionId)
+            ->addFilter('city', $city)
+            ->create();
+        $allowedCities = $this->cityRepository->getList($searchCriteria)->getItems();
+        
+        return count($allowedCities) > 0;
     }
 }

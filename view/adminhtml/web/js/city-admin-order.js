@@ -51,7 +51,7 @@ define([
                     }).catch(error => {
                         console.error('Error fetching or populating cities:', error);
                     });
-                }, 100);
+                }, 200);
             }
         });
 

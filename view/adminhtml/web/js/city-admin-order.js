@@ -57,10 +57,7 @@ define([
 
             if (!regionId) {
                 var selectedCountry = $(billingCountryIdSelector).val();
-                var selectedRegionId = $(billingRegionIdSelector).val();
                 let citiesData = config.directoryData[selectedCountry];
-                console.log(citiesData)
-                                    // console.log(citiesData);
                 if (citiesData &&
                     typeof citiesData === 'object' &&
                     Object.keys(citiesData).length > 0

@@ -43,6 +43,7 @@ define([
         let shippingAsBilling = $(shippingAsBillingSelector).is(':checked');
 
         $(document).ready(function () {
+            // debugger
             if (regionId) {
                 setTimeout(function() {
                     fetchCities(regionId).then(cities => {
@@ -52,6 +53,36 @@ define([
                         console.error('Error fetching or populating cities:', error);
                     });
                 }, 200);
+            }
+
+            if (!regionId) {
+                var selectedCountry = $(billingCountryIdSelector).val();
+                let citiesData = config.directoryData[selectedCountry];
+                if (citiesData &&
+                    typeof citiesData === 'object' &&
+                    Object.keys(citiesData).length > 0
+
+                ) {
+                    var cityInput = $(billingCitySelector),
+                    cityInputName = $(billingCityTextInputElement).attr('name'),
+                    cityInputId = $(billingCityTextInputElement).attr('id');
+
+                    var selectCity = $("<select class='required-entry select admin__control-select' name='" + cityInputName + "' id='" + cityInputId + "'></select>");
+                    var htmlSelect = '<option value="">Please select city</option>';
+
+                    selectCity.append(htmlSelect);
+                    cityInput.replaceWith(selectCity);
+                    let $sameAsBillingCheckbox = jQuery('#order-shipping_same_as_billing');
+                    if ($sameAsBillingCheckbox.length === 0 || $sameAsBillingCheckbox.is(':checked')) {
+                        cityInputName = $(shippingCityTextInputElement).attr('name'),
+                        cityInputId = $(shippingCityTextInputElement).attr('id');
+                        var selectCity = $("<select class='required-entry select admin__control-select' disabled name='" + cityInputName + "' id='" + cityInputId + "'></select>");
+                        var htmlSelect = '<option value="">Please select city</option>';
+                        var cityInput = $(shippingCitySelector);
+                        selectCity.append(htmlSelect);
+                        cityInput.replaceWith(selectCity);
+                    }
+                }
             }
         });
 
@@ -208,12 +239,6 @@ define([
                 console.log(!selectedRegionId)
                 if (!selectedRegionId) {
                     let citiesData = config.directoryData[selectedCountry];
-                    // console.log(citiesData);
-                    // if (citiesData &&
-                    //     typeof citiesData === 'object' &&
-                    //     Object.keys(citiesData).length > 0
-
-                    // ) {
                         var cityInput = $(billingCitySelector),
                         cityInputName = $(billingCityTextInputElement).attr('name'),
                         cityInputId = $(billingCityTextInputElement).attr('id');

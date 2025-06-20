@@ -8,6 +8,9 @@ var config = {
                 'Codazon_SalesPro/js/checkout/view/sidebar-mixin': true,
                 'Eadesigndev_RomCity/js/checkout/view/sidebar-mixin-mixin': true
             },
+            'Magento_Customer/js/model/customer/address': {
+                'Eadesigndev_RomCity/js/model/customer/address-mixin': true
+            }
         }
     }
 };

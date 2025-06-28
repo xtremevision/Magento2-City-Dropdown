@@ -187,7 +187,8 @@ define([
                     if (isShipping) {
                         selectedCountry = $(shippingCountryIdSelector).val();
                     }
-                    let regionCities = config.directoryData[selectedCountry][regionId].cities;
+                    
+                    let regionCities = config.directoryData?.[selectedCountry]?.[regionId]?.cities;
                     //replace back with inputs if region without cities
                     if (regionCities &&
                         typeof regionCities === 'object' &&

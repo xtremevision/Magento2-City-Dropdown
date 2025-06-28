@@ -40,16 +40,22 @@ endif; ?>
 <?php
 $url = $this->getUrl('extendedromcity/cities/getcities');
 ?>
-<script type="text/x-magento-init">
-    {
-        "*": {
-            "Eadesigndev_RomCity/js/city-admin-order": {
-                "ajaxUrl": "<?= $url ?>",
+<script>
+    require(
+        [
+            'jquery',
+            'Eadesigndev_RomCity/js/city-admin-order'
+        ],
+        function($, cityAdminOrder) {
+            var config = {
+                "ajaxUrl": "<?= /* @escapeNotVerified */ $url ?>",
                 "directoryData": <?= /* @noEscape */ $directoryDataJson ?>,
                 "nameSelectorContainsOrder": true
-    }
-}
-}
+            };
+
+            cityAdminOrder(config);
+        }
+    );
 </script>
 <fieldset class="admin__fieldset">
     <legend class="admin__legend <?= /* @escapeNotVerified */ $block->getHeaderCssClass() ?>">

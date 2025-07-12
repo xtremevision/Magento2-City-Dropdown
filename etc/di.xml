@@ -60,4 +60,9 @@
                 type="Eadesigndev\RomCity\Plugin\ShippingInformation"
         />
     </type>
+
+    <preference for="Magento\Sales\Block\Adminhtml\Order\Create\Billing\Address"
+        type="Eadesigndev\RomCity\Block\Adminhtml\Order\Create\Billing\Address"/>
+        <preference for="Magento\Sales\Block\Adminhtml\Order\Create\Shipping\Address"
+        type="Eadesigndev\RomCity\Block\Adminhtml\Order\Create\Shipping\Address"/>
 </config>

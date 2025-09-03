@@ -25,17 +25,27 @@ define([
 
                 let shippingValid = false;
                 let billingValid = false;
-                _.find(allowedShippingCities, function(value) {
-                    if (value === shippingAddress.city) {
-                        return shippingValid = true;
-                    }
-                })
-
-                _.find(allowedBillingCities, function(value) {
-                    if (value === billingAddress.city) {
-                        return billingValid = true;
-                    }
-                })
+                if(allowedShippingCities.length > 0)
+                {
+            	    _.find(allowedShippingCities, function(value) {
+                	if (value === shippingAddress.city) {
+                    	    return shippingValid = true;
+                	}
+            	    })
+            	}
+            	else
+                    shippingValid = true;
+            	    
+		if(allowedBillingCities.length > 0)
+		{
+                    _.find(allowedBillingCities, function(value) {
+	                if (value === billingAddress.city) {
+    	            	    return billingValid = true;
+                	}
+            	    })
+            	}
+            	else
+        	    billingValid = true;
 
                 let invalidShippingCityMessage = '';
                 let invalidBillingCityMessage = '';

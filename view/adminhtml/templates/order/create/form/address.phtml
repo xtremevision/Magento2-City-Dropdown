@@ -8,6 +8,7 @@
 $viewModel = $block->getViewModel();
 if($viewModel) {
     $directoryDataJson = $viewModel->getRegionsJson();
+    $keyedRegions = $viewModel->getKeyedRegionJson();
 } else {
     $directoryDataJson = '{}';
 }
@@ -50,6 +51,7 @@ $url = $this->getUrl('extendedromcity/cities/getcities');
             var config = {
                 "ajaxUrl": "<?= /* @escapeNotVerified */ $url ?>",
                 "directoryData": <?= /* @noEscape */ $directoryDataJson ?>,
+                "keyedRegions" : <?= /* @noEscape */ $keyedRegions ?>,
                 "nameSelectorContainsOrder": true
             };
 

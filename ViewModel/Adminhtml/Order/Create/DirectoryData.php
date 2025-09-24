@@ -22,4 +22,20 @@ class DirectoryData implements ArgumentInterface
     {
         return $this->directoryHelper->getRegionJson();
     }
+
+    public function getKeyedRegionJson()
+    {
+        $regions = [];
+        $data = $this->getRegionsJson();
+        $decoded = json_decode($data);
+        unset($decoded->config);
+        foreach($decoded as $key => $country)
+        {
+            foreach($country as $regionId => $c)
+            {
+                $regions[$key][$c->name] = $regionId;
+            }
+        }
+        return json_encode($regions);
+    }
 }

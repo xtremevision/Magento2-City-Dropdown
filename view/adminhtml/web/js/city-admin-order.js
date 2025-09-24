@@ -11,6 +11,7 @@ define([
             shippingCitySelector = "[name='order[shipping_address][city]']",
             shippingAsBillingSelector = "[name='shipping_same_as_billing']",
             billingRegionIdSelector = "[name='order[billing_address][region_id]']",
+            billingRegionSelector = "[name='order[billing_address][region]']",
             shippingRegionIdSelector = "[name='order[shipping_address][region_id]']",
             shippingRegionSelector = "[name='order[shipping_address][region]']",
             billingCountryIdSelector = "[name='order[billing_address][country_id]']",
@@ -44,6 +45,18 @@ define([
 
         $(document).ready(function () {
             // debugger
+            var selectedCountry = $(billingCountryIdSelector).val();
+            let regionsData = config.keyedRegions[selectedCountry];
+            
+            if(regionsData)
+            {                
+                let regionSelected = $(billingRegionSelector).val();
+                if(regionSelected)
+                {
+                    regionId = regionsData[regionSelected];
+                }
+            }
+
             if (regionId) {
                 setTimeout(function() {
                     fetchCities(regionId).then(cities => {
@@ -92,18 +105,22 @@ define([
          */
         function fetchCities(regionId) {
             return new Promise((resolve, reject) => {
-                const serviceUrl = urlBuilder.build(config.ajaxUrl);
+                let serviceUrl = urlBuilder.build(config.ajaxUrl);
+                if(!serviceUrl.includes('isAjax'))
+                    serviceUrl = config.ajaxUrl + '?isAjax=1';
+
                 $.ajax({
                     url: serviceUrl,
                     type: 'POST',
                     dataType: 'json',
                     data: {
                         region_id: regionId,
-                        // form_key: window.FORM_KEY,
-                        // isAjax: 'true'
+                        form_key: window.FORM_KEY,
+                        //isAjax: 1
                     },
                     // showLoader: true,
                     success: function (response) {
+                        console.log(response);
                         if (response.success) {
                             resolve(response.cities);
                         } else {
@@ -111,6 +128,8 @@ define([
                         }
                     },
                     error: function (error) {
+                        console.log(error);
+
                         reject(error);
                     }
                 });
@@ -139,6 +158,7 @@ define([
                     return true;
                 }
 
+                region = [];
                 $.each(eaCitiesJson[regionId], function (index, value) {
                     region.push(value[regionId]);
                 });
@@ -176,6 +196,10 @@ define([
                 $(shippingCitySelectSelector).attr('disabled', false);
             }
         }
+
+        $(document).on('change', "[name='shipping_same_as_billing']", function () {
+            console.log('moo');
+        });
 
         $(document).on('change', "[name*='region_id']", function () {
             let regionId = $(this).val();

@@ -148,7 +148,7 @@ define([
         function populateCityDropdown(regionId, addressType = '') {
             var region = [],
                 cityInput = $(cityInputSelector);
-
+            
             cityInput.each(function (index, cityInput) {
                 cityInput = $(cityInput);
                 let cityInputName = cityInput.attr('name'),
@@ -194,6 +194,8 @@ define([
                 cityInput.replaceWith(selectCity);
             });
 
+            let shippingAsBilling = $(shippingAsBillingSelector).is(':checked');
+            console.log("shippingAsBilling:", shippingAsBilling);
             if (shippingAsBilling === true) {
                 $(shippingCitySelectSelector).attr('disabled', true);
             } else {
@@ -202,7 +204,10 @@ define([
         }
 
         $(document).on('change', "[name='shipping_same_as_billing']", function () {
-            console.log('moo');
+            //console.log('shipping region:', $(shippingRegionSelector).val());
+            let shippingRegionId = $(shippingRegionIdSelector).val();
+            if(shippingRegionId)
+                populateCityDropdown(shippingRegionId, 'shipping');
         });
 
         $(document).on('change', "[name*='region_id']", function () {

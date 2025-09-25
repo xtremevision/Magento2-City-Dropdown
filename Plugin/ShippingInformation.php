@@ -71,10 +71,20 @@ class ShippingInformation
 
         $searchCriteria = $this->searchCriteriaBuilder
             ->addFilter('region_id', $regionId)
+            ->setPageSize(1)
+            ->create();
+
+        $regionIsPresent = $this->cityRepository->getList($searchCriteria)->getTotalCount() > 0;
+        if (!$regionIsPresent) {
+            return true;
+        }
+
+        $searchCriteria = $this->searchCriteriaBuilder
+            ->addFilter('region_id', $regionId)
             ->addFilter('city', $city)
             ->create();
         $allowedCities = $this->cityRepository->getList($searchCriteria)->getItems();
-        
+
         return count($allowedCities) > 0;
     }
 }

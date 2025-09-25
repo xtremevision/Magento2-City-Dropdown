@@ -85,6 +85,10 @@ define([
 
                     selectCity.append(htmlSelect);
                     cityInput.replaceWith(selectCity);
+
+                    $(billingRegionIdSelector).trigger('change');
+                    $(billingRegionSelector).trigger('change');
+
                     let $sameAsBillingCheckbox = jQuery('#order-shipping_same_as_billing');
                     if ($sameAsBillingCheckbox.length === 0 || $sameAsBillingCheckbox.is(':checked')) {
                         cityInputName = $(shippingCityTextInputElement).attr('name'),

@@ -212,6 +212,8 @@ define([
 
         $(document).on('change', "[name*='region_id']", function () {
             let regionId = $(this).val();
+            let shippingAsBilling = $(shippingAsBillingSelector).is(':checked');
+
             if (regionId) {
                 fetchCities(regionId).then(cities => {
                     eaCitiesJson[regionId] = cities;
@@ -260,6 +262,8 @@ define([
             var selectedCountry = $(billingCountryIdSelector).val();
             var selectedRegionId = $(billingRegionIdSelector).val();
             
+            let shippingAsBilling = $(shippingAsBillingSelector).is(':checked');
+
             if (config.directoryData[selectedCountry] === undefined) {
                 $(shippingRegionIdSelector).hide();
                 $(shippingRegionSelector).show();
@@ -320,6 +324,8 @@ define([
 
         $(document).on('change', billingCitySelector, function () {
             // debugger
+            let shippingAsBilling = $(shippingAsBillingSelector).is(':checked');
+
             if(this.tagName === 'SELECT' && shippingAsBilling === true) {
                 var shippingCity = $(shippingCitySelectSelector);
                 var billingCityOptions = $(billingCitySelectSelector + ' > option').clone(true);

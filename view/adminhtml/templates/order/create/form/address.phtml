@@ -1,6 +1,7 @@
 <?php
 
 // @codingStandardsIgnoreFile
+$url = $this->getUrl('extendedromcity/cities/getcities');
 
 /**
  * @var \Magento\Sales\Block\Adminhtml\Order\Create\Billing\Address|\Magento\Sales\Block\Adminhtml\Order\Create\Shipping\Address $block
@@ -22,6 +23,7 @@ if ($block->getIsShipping()):
 
             order.shippingAddressContainer = '<?= /* @escapeNotVerified */ $_fieldsContainerId ?>';
             order.setAddresses(<?= /* @escapeNotVerified */ $block->getAddressCollectionJson() ?>);
+            order.ajaxUrl = '<?= /* @escapeNotVerified */ $url ?>';
 
         });
     </script>
@@ -33,14 +35,12 @@ else:
     <script>
         require(["Magento_Sales/order/create/form"], function(){
             order.billingAddressContainer = '<?= /* @escapeNotVerified */ $_fieldsContainerId ?>';
+            order.ajaxUrl = '<?= /* @escapeNotVerified */ $url ?>';
         });
     </script>
 <?php
 endif; ?>
 
-<?php
-$url = $this->getUrl('extendedromcity/cities/getcities');
-?>
 <script>
     require(
         [
@@ -121,6 +121,7 @@ $url = $this->getUrl('extendedromcity/cities/getcities');
                 order.bindAddressFields('<?= /* @escapeNotVerified */ $_addressChoiceContainerId ?>');
                 <?php if ($block->getIsShipping() && $block->getIsAsBilling()): ?>
                 order.disableShippingAddress(true);
+                order.ajaxUrl = '<?= /* @escapeNotVerified */ $url ?>';
                 <?php endif; ?>
         });
     </script>

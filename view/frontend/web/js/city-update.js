@@ -30,9 +30,6 @@ define([
                     options;
 
                 $.each(region, function (index, value) {
-                    console.log("value", value);
-                    console.log("cityInput", cityInput);
-
                     if ( value == cityInput) {
                         options = '<option value="' + value + '" selected>' + value + '</option>';
                     } else {

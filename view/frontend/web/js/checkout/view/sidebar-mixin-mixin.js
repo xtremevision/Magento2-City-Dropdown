@@ -28,28 +28,28 @@ define([
                 if(allowedShippingCities.length > 0)
                 {
             	    _.find(allowedShippingCities, function(value) {
-                	if (value === shippingAddress.city) {
-                    	    return shippingValid = true;
-                	}
+                        if (value === shippingAddress.city) {
+                                return shippingValid = true;
+                        }
             	    })
             	}
             	else
                     shippingValid = true;
             	    
-		if(allowedBillingCities.length > 0)
-		{
+                if(allowedBillingCities.length > 0)
+                {
                     _.find(allowedBillingCities, function(value) {
-	                if (value === billingAddress.city) {
-    	            	    return billingValid = true;
-                	}
-            	    })
-            	}
-            	else
-        	    billingValid = true;
+                        if (value === billingAddress.city) {
+                            return billingValid = true;
+                        }
+                    })
+                }
+                else
+                    billingValid = true;
 
                 let invalidShippingCityMessage = '';
                 let invalidBillingCityMessage = '';
-                if (shippingValid === false) {
+                if (!quote.isVirtual() && shippingValid === false) {
                     invalidShippingCityMessage = $t('The city "%1" in your current shipping address is not valid. Please update your address before placing the order.')
                         .replace('%1', shippingAddress.city);
                 }

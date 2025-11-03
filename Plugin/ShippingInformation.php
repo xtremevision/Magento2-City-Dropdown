@@ -39,7 +39,8 @@ class ShippingInformation
             $shippingCity = $shippingAddress->getCity();
             $shippingRegionId = $shippingAddress->getRegionId();
             if ($shippingCity && $shippingRegionId && !$this->isCityValid($shippingCity, $shippingRegionId)) {
-                $shippingAddress->setCountryId(null);
+//                $shippingAddress->setCountryId(null);
+                $shippingAddress->setCity(null);
                 $customValidationFailed = true;
             }
         }
@@ -56,7 +57,8 @@ class ShippingInformation
                 (!$isBillingSameAsShipping || $customValidationFailed) &&
                 !$this->isCityValid($billingCity, $billingRegionId)
             ) {
-                $billingAddress->setCountryId(null);
+                $billingAddress->setCity(null);
+//                $billingAddress->setCountryId(null);
             }
         }
 

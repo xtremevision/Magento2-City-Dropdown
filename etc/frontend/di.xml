@@ -14,4 +14,8 @@
             </argument>
         </arguments>
     </type>
+    <type name="Magento\Customer\Model\Address\CustomerAddressDataProvider">
+        <plugin name="eadesign-checkout-provider"
+                type="Eadesigndev\RomCity\Plugin\AddressDataProvider"/>
+    </type>
 </config>

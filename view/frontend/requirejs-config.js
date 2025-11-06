@@ -10,7 +10,11 @@ var config = {
             },
             'Magento_Customer/js/model/customer/address': {
                 'Eadesigndev_RomCity/js/model/customer/address-mixin': true
+            },
+            'Magento_Checkout/js/view/shipping-address/address-renderer/default': {
+                'Eadesigndev_RomCity/js/checkout/view/shipping-address/address-renderer/default-mixin': true
             }
+
         }
     }
 };

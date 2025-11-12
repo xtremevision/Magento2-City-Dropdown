@@ -5,10 +5,7 @@ define([
     return function (addressFactory) {
         return wrapper.wrap(addressFactory, function (originalFactory, addressData) {
             var address = originalFactory(addressData);
-            address.isEditable = function () {
-                return true;
-            }
-
+            address.validAddressCitySelect = addressData['validAddressCitySelect'];
             return address;
         });
     };

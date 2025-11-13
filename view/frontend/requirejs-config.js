@@ -13,6 +13,9 @@ var config = {
             },
             'Magento_Checkout/js/view/shipping-address/address-renderer/default': {
                 'Eadesigndev_RomCity/js/checkout/view/shipping-address/address-renderer/default-mixin': true
+            },
+            'Magento_Checkout/js/view/shipping': {
+                'Eadesigndev_RomCity/js/checkout/view/shipping-mixin': true
             }
 
         }

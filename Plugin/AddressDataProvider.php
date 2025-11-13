@@ -5,7 +5,6 @@ namespace Eadesigndev\RomCity\Plugin;
 
 use Eadesigndev\RomCity\Api\RomCityRepositoryInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Customer\Model\Address;
 use Magento\Customer\Model\Address\CustomerAddressDataProvider;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 
@@ -30,17 +29,33 @@ class AddressDataProvider
      * @return array
      */
     public function afterGetAddressDataByCustomer(CustomerAddressDataProvider $subject, array $result, CustomerInterface $customer): array
-    {   /** @var Address $address */
+    {
         foreach ($result as &$address) {
-            $city = $address['city'];
-            $regionId = $address['region_id'];
-            $address['validAddressCitySelect'] = true;
-            if (!$this->isCityValid($city, $regionId)) {
-                $address['validAddressCitySelect'] = false;
-            }
+            $city = (string)($address['city'] ?? '');
+            $regionId = $address['region_id'] ?? null;
+            $isValid = $this->isCityValid($city, $regionId);
+            $address = $this->applyExtensionAttribute($address, $isValid);
         }
 
         return $result;
+    }
+
+    private function applyExtensionAttribute(array $address, bool $isValid): array
+    {
+        $extensionAttributes = $address['extension_attributes'] ?? [];
+
+        if (is_object($extensionAttributes) && method_exists($extensionAttributes, 'setValidAddressCitySelect')) {
+            $extensionAttributes->setValidAddressCitySelect($isValid);
+        } else {
+            if (!is_array($extensionAttributes)) {
+                $extensionAttributes = [];
+            }
+            $extensionAttributes['valid_address_city_select'] = $isValid;
+        }
+
+        $address['extension_attributes'] = $extensionAttributes;
+
+        return $address;
     }
 
     private function isCityValid(string $city, $regionId): bool

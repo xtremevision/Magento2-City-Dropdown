@@ -12,11 +12,16 @@ define([
             },
 
             /**
-             * @param {Object} address
-             * @return {String}
+             * @return {Boolean}
              */
-            getIsValidCity: function (address) {
-                return this.address().validAddressCitySelect;
+            getIsValidCity: function () {
+                var extensionAttributes = this.address().extensionAttributes || {};
+
+                if (typeof extensionAttributes['valid_address_city_select'] === 'undefined') {
+                    return true;
+                }
+
+                return extensionAttributes['valid_address_city_select'];
             },
 
             /**

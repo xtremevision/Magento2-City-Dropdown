@@ -52,16 +52,7 @@ class DataProvider extends AbstractDataProvider
      */
     public function getData()
     {
-        if (isset($this->loadedData)) {
-            return $this->loadedData;
-        }
-        $items = $this->collection->getItems();
-        foreach ($items as $field) {
-            $this->loadedData[$field->getId()] = $field->getData();
-        }
-        return $this->loadedData;
-        
-        /*if ($this->loadedData !== null) {
+        if ($this->loadedData !== null) {
             return $this->loadedData;
         }
 
@@ -77,6 +68,6 @@ class DataProvider extends AbstractDataProvider
             $this->dataPersistor->clear(self::DATA_PERSISTOR_KEY);
         }
 
-        return $this->loadedData ?? [];*/
+        return $this->loadedData ?? [];
     }
 }

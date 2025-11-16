@@ -44,26 +44,6 @@
             </item>
         </argument>
 
-<!--
-        <field name="entity_id" formElement="hidden">
-            <settings>
-                <dataType>text</dataType>
-                <dataScope>entity_id</dataScope>
-            </settings>
-        </field>
-
-        <field name="entity_id">
-            <argument name="data" xsi:type="array">
-                <item name="config" xsi:type="array">
-                    <item name="visible" xsi:type="boolean">false</item>
-                    <item name="dataType" xsi:type="string">text</item>
-                    <item name="formElement" xsi:type="string">input</item>
-                    <item name="source" xsi:type="string">entity_id</item>
-                </item>
-            </argument>
-        </field>
--->
-
         <field name="region_id" sortOrder="10" formElement="select">
             <settings>
                 <dataType>number</dataType>

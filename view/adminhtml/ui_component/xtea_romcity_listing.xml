@@ -13,11 +13,12 @@
                 <item name="class" xsi:type="string">primary</item>
                 <item name="url" xsi:type="url" path="manage_romcity/index/edit"/>
             </item>
+            <item name="customButton" xsi:type="string">Eadesigndev\RomCity\Block\Adminhtml\ConfigButton</item> 
             <item name="import" xsi:type="array">
-                <item name="name" xsi:type="string">import</item>
-                <item name="label" xsi:type="string" translate="true">Go to Import Cities</item>
-                <item name="class" xsi:type="string">secondary</item>
-                <item name="url" xsi:type="string">admin/system_config/edit/section/ea_romcity/website/1</item>
+                <!-- <item name="name" xsi:type="string">import</item> -->
+                <!-- <item name="label" xsi:type="string" translate="true">Go to Import Cities</item> -->
+                <!-- <item name="class" xsi:type="string">secondary</item> -->
+                <!-- <item name="url" xsi:type="url" path="admin/system_config/edit/section/ea_romcity" /> -->
             </item>
         </item>
     </argument>

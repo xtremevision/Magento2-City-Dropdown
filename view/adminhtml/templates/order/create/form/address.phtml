@@ -52,7 +52,9 @@ endif; ?>
                 "ajaxUrl": "<?= /* @escapeNotVerified */ $url ?>",
                 "directoryData": <?= /* @noEscape */ $directoryDataJson ?>,
                 "keyedRegions" : <?= /* @noEscape */ $keyedRegions ?>,
-                "nameSelectorContainsOrder": true
+                "nameSelectorContainsOrder": true,
+                "skipPopulateOnLoad": true,
+                "addresses": <?= /* @noEscape */ $block->getAddressCollectionJson() ?>
             };
 
             cityAdminOrder(config);

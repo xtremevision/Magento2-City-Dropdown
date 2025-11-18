@@ -43,63 +43,36 @@ define([
         let regionId = $(regionIdSelector).val();
         let shippingAsBilling = $(shippingAsBillingSelector).is(':checked');
 
+        function getCitiesFromDirectoryData(selectedCountry, regionId) {
+            let regionCities = config.directoryData?.[selectedCountry]?.[regionId]?.cities;
+            if (regionCities &&
+                typeof regionCities === 'object' &&
+                Object.keys(regionCities).length !== 0
+            ) {
+                return regionCities;
+            }
+
+            return null;
+        }
+
+        function determineSelectedCountry() {
+            let selectedCountry = $(billingCountryIdSelector).val();
+            let isShipping = $(this).attr('name') === 'order[shipping_address][region_id]' || $(this).attr('name') === 'shipping_address[region_id]';
+            if (isShipping) {
+                selectedCountry = $(shippingCountryIdSelector).val();
+            }
+
+            return selectedCountry;
+        }
+
         $(document).ready(function () {
             // debugger
-            var selectedCountry = $(billingCountryIdSelector).val();
-            let regionsData = config.keyedRegions[selectedCountry];
-            
-            if(regionsData)
-            {                
-                let regionSelected = $(billingRegionSelector).val();
-                if(regionSelected)
-                {
-                    regionId = regionsData[regionSelected];
-                }
+            if (config.skipPopulateOnLoad === true) {
+                return;
             }
 
             if (regionId) {
-                setTimeout(function() {
-                    fetchCities(regionId).then(cities => {
-                        eaCitiesJson[regionId] = cities;
-                        populateCityDropdown(regionId);
-                    }).catch(error => {
-                        console.error('Error fetching or populating cities:', error);
-                    });
-                }, 200);
-            }
-
-            if (!regionId) {
-                var selectedCountry = $(billingCountryIdSelector).val();
-                let citiesData = config.directoryData[selectedCountry];
-                if (citiesData &&
-                    typeof citiesData === 'object' &&
-                    Object.keys(citiesData).length > 0
-
-                ) {
-                    var cityInput = $(billingCitySelector),
-                    cityInputName = $(billingCityTextInputElement).attr('name'),
-                    cityInputId = $(billingCityTextInputElement).attr('id');
-
-                    var selectCity = $("<select class='required-entry select admin__control-select' name='" + cityInputName + "' id='" + cityInputId + "'></select>");
-                    var htmlSelect = '<option value="">Please select city</option>';
-
-                    selectCity.append(htmlSelect);
-                    cityInput.replaceWith(selectCity);
-
-                    $(billingRegionIdSelector).trigger('change');
-                    $(billingRegionSelector).trigger('change');
-
-                    let $sameAsBillingCheckbox = jQuery('#order-shipping_same_as_billing');
-                    if ($sameAsBillingCheckbox.length === 0 || $sameAsBillingCheckbox.is(':checked')) {
-                        cityInputName = $(shippingCityTextInputElement).attr('name'),
-                        cityInputId = $(shippingCityTextInputElement).attr('id');
-                        var selectCity = $("<select class='required-entry select admin__control-select' disabled name='" + cityInputName + "' id='" + cityInputId + "'></select>");
-                        var htmlSelect = '<option value="">Please select city</option>';
-                        var cityInput = $(shippingCitySelector);
-                        selectCity.append(htmlSelect);
-                        cityInput.replaceWith(selectCity);
-                    }
-                }
+                $(regionIdSelector).trigger('change');
             }
         });
 
@@ -143,28 +116,27 @@ define([
         /**
          * Function to populate the city dropdown
          * @param {string} regionId
+         * @param {string} countryId
          * @param addressType
          */
-        function populateCityDropdown(regionId, addressType = '') {
+        function populateCityDropdown(regionId, countryId, addressType = '') {
             var region = [],
                 cityInput = $(cityInputSelector);
-            
+
             cityInput.each(function (index, cityInput) {
                 cityInput = $(cityInput);
                 let cityInputName = cityInput.attr('name'),
                     cityInputId = cityInput.attr('id'),
                     cityInputValue = cityInput.val();
-                if (JSON.stringify(eaCitiesJson) === '{}' ) {
-                    return;
-                }
 
-                if (addressType && !cityInputName.include(addressType)) {
+                if (addressType && addressType !== '' && !cityInputName.include(addressType)) {
                     return true;
                 }
 
                 region = [];
-                $.each(eaCitiesJson[regionId], function (index, value) {
-                    region.push(value[regionId]);
+                let cities = getCitiesFromDirectoryData(countryId, regionId);
+                $.each(cities, function (index, value) {
+                    region.push(value.name);
                 });
 
                 if (region.length === 0) {
@@ -206,52 +178,45 @@ define([
         $(document).on('change', "[name='shipping_same_as_billing']", function () {
             //console.log('shipping region:', $(shippingRegionSelector).val());
             let shippingRegionId = $(shippingRegionIdSelector).val();
+            let selectedCountry = determineSelectedCountry();
             if(shippingRegionId)
-                populateCityDropdown(shippingRegionId, 'shipping');
+                populateCityDropdown(shippingRegionId, selectedCountry, 'shipping');
         });
 
         $(document).on('change', "[name*='region_id']", function () {
             let regionId = $(this).val();
             let shippingAsBilling = $(shippingAsBillingSelector).is(':checked');
-
             if (regionId) {
-                fetchCities(regionId).then(cities => {
-                    eaCitiesJson[regionId] = cities;
-                    var selectedCountry = $(billingCountryIdSelector).val();
-                    let isShipping = $(this).attr('name') === 'order[shipping_address][region_id]' || $(this).attr('name') === 'shipping_address[region_id]';
-                    if (isShipping) {
-                        selectedCountry = $(shippingCountryIdSelector).val();
+                // fetchCities(regionId).then(cities => {
+                // eaCitiesJson[regionId] = cities;
+                let selectedCountry = determineSelectedCountry();
+                let cities = getCitiesFromDirectoryData(selectedCountry, regionId);
+
+                //replace back with inputs if region without cities
+                if (!cities) {
+                    $(billingCitySelectSelector).replaceWith(cityInput.filter(function(){
+                        return $(this).attr('name') === 'order[billing_address][city]' || $(this).attr('name') === 'billing_address[city]'
+                    }));
+                    $(billingCitySelectSelector).val('');
+                    if (shippingAsBilling || isShipping) {
+                        $(shippingCitySelectSelector).replaceWith(cityInput.filter(function(){
+                        return $(this).attr('name') === 'order[shipping_address][city]' || $(this).attr('name') === 'shipping_address[city]'
+                    }));
                     }
-                    
-                    let regionCities = config.directoryData?.[selectedCountry]?.[regionId]?.cities;
-                    //replace back with inputs if region without cities
-                    if (regionCities &&
-                        typeof regionCities === 'object' &&
-                        Object.keys(regionCities).length == 0
-                    ) {
-                        $(billingCitySelectSelector).replaceWith(cityInput.filter(function(){
-                            return $(this).attr('name') === 'order[billing_address][city]' || $(this).attr('name') === 'billing_address[city]'
-                        }));
-                        $(billingCitySelectSelector).val('');
-                        if (shippingAsBilling || isShipping) {
-                            $(shippingCitySelectSelector).replaceWith(cityInput.filter(function(){
-                            return $(this).attr('name') === 'order[shipping_address][city]' || $(this).attr('name') === 'shipping_address[city]'
-                        }));
-                        }
-                        return;
-                    }
-                    if ($(this).attr('name') === 'order[billing_address][region_id]' || $(this).attr('name') === 'billing_address[region_id]') {
-                        if (shippingAsBilling === true) {
-                            populateCityDropdown(regionId);
-                        } else {
-                            populateCityDropdown(regionId, 'billing');
-                        }
+                    return;
+                }
+                if ($(this).attr('name') === 'order[billing_address][region_id]' || $(this).attr('name') === 'billing_address[region_id]') {
+                    if (shippingAsBilling === true) {
+                        populateCityDropdown(regionId, selectedCountry);
                     } else {
-                        populateCityDropdown(regionId, 'shipping');
+                        populateCityDropdown(regionId, selectedCountry, 'billing');
                     }
-                }).catch(error => {
-                    console.error('Error fetching or populating cities:', error);
-                });
+                } else {
+                    populateCityDropdown(regionId, selectedCountry, 'shipping');
+                }
+                // }).catch(error => {
+                //     console.error('Error fetching or populating cities:', error);
+                // });
             } else {
                 $(billingCitySelectSelector).empty().append(htmlSelect);
                 $(shippingCitySelectSelector).empty().append(htmlSelect);
@@ -261,7 +226,7 @@ define([
         $(document).on('change', billingCountryIdSelector, function () {
             var selectedCountry = $(billingCountryIdSelector).val();
             var selectedRegionId = $(billingRegionIdSelector).val();
-            
+
             let shippingAsBilling = $(shippingAsBillingSelector).is(':checked');
 
             if (config.directoryData[selectedCountry] === undefined) {
@@ -289,10 +254,10 @@ define([
                         cityInput.replaceWith(selectCity);
                     // }
                 } else {
-                    populateCityDropdown(selectedRegionId, 'billing');
+                    populateCityDropdown(selectedRegionId, selectedCountry, 'billing');
                 }
-                
-                
+
+
             }
             if($(billingRegionIdSelector).prop('tagName') === 'SELECT' && shippingAsBilling === true) {
                 var shippingRegionId = $(shippingRegionIdSelector);
@@ -327,27 +292,49 @@ define([
             let shippingAsBilling = $(shippingAsBillingSelector).is(':checked');
 
             if(this.tagName === 'SELECT' && shippingAsBilling === true) {
-                var shippingCity = $(shippingCitySelectSelector);
-                var billingCityOptions = $(billingCitySelectSelector + ' > option').clone(true);
+                let shippingCity = $(shippingCitySelectSelector);
+                let billingCityOptions = $(billingCitySelectSelector + ' > option').clone(true);
                 shippingCity.empty().append(billingCityOptions);
-                var billingCityOptionSelected = $(billingCitySelectSelector).find(":selected").val();
+                let billingCityOptionSelected = $(billingCitySelectSelector).find(":selected").val();
                 shippingCity.find('option[value="' + billingCityOptionSelected + '"]').attr('selected', 'selected');
             } else {
                 if(this.tagName === 'INPUT' && shippingAsBilling === true) {
-                    var shippingCity = $(shippingCitySelector);
-                    var billingCityVal = $(billingCitySelector).val();
+                    let billingCityVal = $(billingCitySelector).val();
                     $(shippingCitySelector).val(billingCityVal);
                 }
             }
         });
 
+        $(document).on('change', '#order-billing_address_customer_address_id', function (event) {
+            let data = this.value;
+            let addresses = config.addresses;
+            let selectedAddress = addresses[data];
+            if (selectedAddress) {
+                let city = selectedAddress.city;
+                let billingCity = $(billingCitySelectSelector);
+                billingCity.val(city).change();
+            }
+        });
+
+        $(document).on('change', '#order-shipping_address_customer_address_id', function (event) {
+            let data = this.value;
+            let addresses = config.addresses;
+            let selectedAddress = addresses[data];
+            if (selectedAddress) {
+                let city = selectedAddress.city;
+                let shippingCity = $(shippingCitySelectSelector);
+                shippingCity.val(city).change();
+            }
+        });
+
         $(document).ready(function() {
+            // debugger
             let billingCitySelect = 'select[name="order\\[billing_address\\]\\[city\\]"], select[name="billing_address\\[city\\]"]';
             $(document).on('change','select[name="order\\[billing_address\\]\\[city\\]"], select[name="billing_address\\[city\\]"]', function() {
                 let $shippingCityInput = jQuery('select[name="order\\[shipping_address\\]\\[city\\]"], select[name="shipping_address\\[city\\]"]');
                 let $sameAsBillingCheckbox = jQuery('#order-shipping_same_as_billing');
                 let billingCityValue = jQuery(this).val();
-                
+
                 if ($sameAsBillingCheckbox.length === 0 || $sameAsBillingCheckbox.is(':checked')) {
                     $shippingCityInput.val(billingCityValue);
                 }

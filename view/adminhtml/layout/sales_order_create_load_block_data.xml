@@ -2,12 +2,10 @@
 
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-        <referenceBlock name="items">
-            <!-- <block class="Magento\Framework\View\Element\Template" template="Eadesigndev_RomCity::order/create/form/address.phtml" name="billing_address">
-                <arguments>
-                    <argument name="view_model" xsi:type="object">Eadesigndev\RomCity\ViewModel\Adminhtml\Order\Create\DirectoryData</argument>
-                </arguments>
-            </block> -->
+        <referenceBlock name="billing_address" class="Eadesigndev\RomCity\Block\Adminhtml\Order\Create\Billing\Address" template="Eadesigndev_RomCity::order/create/form/address.phtml">
+            <arguments>
+                <argument name="view_model" xsi:type="object">Eadesigndev\RomCity\ViewModel\Adminhtml\Order\Create\DirectoryData</argument>
+            </arguments>
         </referenceBlock>
     </body>
 </page>

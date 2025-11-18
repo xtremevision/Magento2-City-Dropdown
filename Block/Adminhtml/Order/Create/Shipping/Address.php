@@ -57,6 +57,7 @@ class Address extends \Magento\Sales\Block\Adminhtml\Order\Create\Shipping\Addre
     {
         parent::_prepareForm();
 
+        $formValues = $this->getFormValues();
         $countryElement = $this->_form->getElement('country_id');
         $regionIdElement = $this->_form->getElement('region_id');
         $regionId = $regionIdElement->getValue();
@@ -64,28 +65,34 @@ class Address extends \Magento\Sales\Block\Adminhtml\Order\Create\Shipping\Addre
         $searchCriteria = $this->searchCriteriaBuilder
             ->addFilter('region_id', $regionId)
             ->create();
-        
-        $values = ['Please select city'];
+
+        $cityValue = $formValues['city'];
+        $cityId = null;
+        $values = [__('Please select city')];
         if ($regionId) {
             $cities = $this->cityRepository->getList($searchCriteria)->getItems();
-            foreach($cities as $city){
+            foreach($cities as $city) {
+                if ($city->getCity() === $cityValue) {
+                    $cityId = $city->getCity();
+                }
                 $values[$city->getCity()] = $city->getCity();
             }
         }
 
         $addressForm = $this->_customerFormFactory->create('customer_address', 'adminhtml_customer_address');
         $cityAttribute = $addressForm->getAttribute('city');
-        if ($countryId == 'RO' && !$regionId) {
+        if ($countryId == 'RO') {
             $this->_form = $this->_form->removeField('city');
             foreach($this->_form->getElements() as $fieldset){
-                $fieldset->removeField('city');  
+                $fieldset->removeField('city');
                 $fieldset->addField('city', 'select', [
                     'name' => 'order[shipping_address]' . '[' . $cityAttribute->getAttributeCode() . ']',
                     'label' => __($cityAttribute->getStoreLabel()),
                     'class' => $this->getValidationClasses($cityAttribute),
                     'required' => $cityAttribute->isRequired(),
-                    'values' => $values
-                ], 'region');  
+                    'values' => $values,
+                    'value' => $cityId
+                ], 'region');
             }
 
         }

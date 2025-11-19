@@ -66,7 +66,7 @@ class Address extends \Magento\Sales\Block\Adminhtml\Order\Create\Shipping\Addre
             ->addFilter('region_id', $regionId)
             ->create();
 
-        $cityValue = $formValues['city'];
+        $cityValue = $formValues['city'] ?? '';
         $cityId = null;
         $values = [__('Please select city')];
         if ($regionId) {

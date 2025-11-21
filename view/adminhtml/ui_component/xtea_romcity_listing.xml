@@ -13,13 +13,12 @@
                 <item name="class" xsi:type="string">primary</item>
                 <item name="url" xsi:type="url" path="manage_romcity/index/edit"/>
             </item>
-            <item name="importButton" xsi:type="string">Eadesigndev\RomCity\Block\Adminhtml\ConfigButton</item> 
-            <!-- <item name="import" xsi:type="array">
+            <item name="import" xsi:type="array">
                 <item name="name" xsi:type="string">import</item>
                 <item name="label" xsi:type="string" translate="true">Go to Import Cities</item>
                 <item name="class" xsi:type="string">secondary</item>
-                <item name="url" xsi:type="url" path="admin/system_config/edit/section/ea_romcity" />
-            </item> -->
+                <item name="url" xsi:type="url" path="adminhtml/system_config/edit/section/ea_romcity" />
+            </item>
         </item>
     </argument>
     <dataSource name="city_data_source">
@@ -191,7 +190,7 @@
                 </item>
             </argument>
         </column>
-        
+
         <actionsColumn name="actions" class="Eadesigndev\RomCity\Ui\Component\Cities\Listing\Column\Actions" sortOrder="200">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">

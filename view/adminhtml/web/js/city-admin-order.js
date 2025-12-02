@@ -198,7 +198,7 @@ define([
                         return $(this).attr('name') === 'order[billing_address][city]' || $(this).attr('name') === 'billing_address[city]'
                     }));
                     $(billingCitySelectSelector).val('');
-                    if (shippingAsBilling || isShipping) {
+                    if (shippingAsBilling) {
                         $(shippingCitySelectSelector).replaceWith(cityInput.filter(function(){
                         return $(this).attr('name') === 'order[shipping_address][city]' || $(this).attr('name') === 'shipping_address[city]'
                     }));

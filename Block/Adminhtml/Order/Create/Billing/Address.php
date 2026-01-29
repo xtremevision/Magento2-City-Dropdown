@@ -7,6 +7,12 @@ use Eadesigndev\RomCity\Api\RomCityRepositoryInterface;
 
 class Address extends \Magento\Sales\Block\Adminhtml\Order\Create\Billing\Address
 {
+    /** @var \Magento\Framework\Api\SearchCriteriaBuilder */
+    private $criteriaBuilder;
+
+    /** @var \Eadesigndev\RomCity\Api\RomCityRepositoryInterface */
+    private $cityRepository;
+
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Backend\Model\Session\Quote $sessionQuote,
@@ -45,7 +51,9 @@ class Address extends \Magento\Sales\Block\Adminhtml\Order\Create\Billing\Addres
             $data
         );
 
-        $this->cityRepository = $cityRepository;
+        $this->cityRepository = $cityRepository;    
+        $this->criteriaBuilder = $criteriaBuilder;
+
     }
 
     /**
@@ -53,7 +61,7 @@ class Address extends \Magento\Sales\Block\Adminhtml\Order\Create\Billing\Addres
      *
      * @return $this
      */
-    protected function _prepareForm()
+    /*protected function _prepareForm()
     {
         parent::_prepareForm();
 
@@ -98,5 +106,71 @@ class Address extends \Magento\Sales\Block\Adminhtml\Order\Create\Billing\Addres
         }
 
         return $this;
+    }*/
+
+protected function _prepareForm()
+{
+    parent::_prepareForm();
+
+    $formValues = (array)$this->getFormValues();
+
+    $countryElement  = $this->_form->getElement('country_id');
+    $regionIdElement = $this->_form->getElement('region_id');
+
+    $regionId  = $regionIdElement ? (int)$regionIdElement->getValue() : 0;
+    $countryId = $countryElement ? (string)$countryElement->getValue() : '';
+
+    // FIX 1: safe read
+    $cityValue = (string)($formValues['city'] ?? '');
+
+    $cityId  = null;
+    //$values  = [__('Please select city')];
+    $values = [['value' => '', 'label' => __('Please select city')]];
+
+    if ($regionId) {
+        // FIX 2: use the criteria builder that exists on the parent block
+        $searchCriteria = $this->criteriaBuilder
+            ->addFilter('region_id', $regionId)
+            ->create();
+
+        $cities = $this->cityRepository->getList($searchCriteria)->getItems();
+        foreach ($cities as $city) {
+            $cityName = (string)$city->getCity();
+
+            if ($cityName !== '') {
+                if ($cityName === $cityValue) {
+                    $cityId = $cityName;
+                }
+                $values[$cityName] = $cityName;
+            }
+        }
     }
+
+    $addressForm = $this->_customerFormFactory->create('customer_address', 'adminhtml_customer_address');
+    $cityAttribute = $addressForm->getAttribute('city');
+
+    if ($countryId === 'RO' && $cityAttribute) {
+        // remove city field from the main form + fieldsets (your existing logic)
+        $this->_form = $this->_form->removeField('city');
+        foreach ($this->_form->getElements() as $fieldset) {
+            $fieldset->removeField('city');
+            $fieldset->addField(
+                'city',
+                'select',
+                [
+                    'name'     => 'order[billing_address][' . $cityAttribute->getAttributeCode() . ']',
+                    'label'    => __($cityAttribute->getStoreLabel()),
+                    'class'    => $this->getValidationClasses($cityAttribute),
+                    'required' => (bool)$cityAttribute->isRequired(),
+                    'values'   => $values,
+                    'value'    => $cityId
+                ],
+                'region'
+            );
+        }
+    }
+
+    return $this;
+}
+    
 }
